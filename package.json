@@ -1,0 +1,13 @@
+{
+  "name": "cafe-da-manha-equipe",
+  "version": "1.0.0",
+  "description": "App para organizar o café da manhã da equipe",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
