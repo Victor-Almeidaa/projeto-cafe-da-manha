@@ -1,0 +1,227 @@
+:root {
+  --verde: #c9eed6;
+  --verde-forte: #8fd5a9;
+  --verde-texto: #1f5c3a;
+  --azul: #cfe7fa;
+  --azul-forte: #8bc4ee;
+  --azul-texto: #1d4a6e;
+  --branco: #ffffff;
+  --texto: #28465a;
+  --erro: #b4443c;
+  --raio: 16px;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: "Nunito", "Segoe UI", Arial, sans-serif;
+  color: var(--texto);
+  background: linear-gradient(160deg, var(--azul) 0%, var(--branco) 45%, var(--verde) 100%) fixed;
+  min-height: 100vh;
+}
+
+.topo {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+.topo h1 { margin: 0 0 4px; font-size: 2rem; font-weight: 800; }
+.topo p { margin: 0; color: var(--azul-texto); }
+.topo { position: relative; }
+#btn-sair { position: absolute; right: 20px; top: 32px; }
+
+.auth-area { max-width: 440px; margin: 28px auto; }
+.auth-area form > button { width: 100%; margin-top: 8px; }
+.link-auth { margin-top: 10px; padding: 4px 0; background: transparent; color: var(--azul-texto); }
+
+.painel {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.cartao {
+  background: var(--branco);
+  border-radius: var(--raio);
+  padding: 22px;
+  border: 2px solid var(--azul);
+}
+.cartao:nth-child(2) { border-color: var(--verde); }
+.cartao h2 { margin: 0 0 14px; font-size: 1.15rem; }
+.tabela-area { grid-column: 1 / -1; border-color: var(--verde); }
+
+/* Calendário */
+.mes-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.mes-nav h2 { margin: 0; text-transform: capitalize; }
+.mes-nav button {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: var(--azul); color: var(--azul-texto);
+  font-size: 1.3rem; cursor: pointer;
+}
+.mes-nav button:hover { background: var(--azul-forte); }
+
+.semana, .dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.semana span { text-align: center; font-size: .8rem; font-weight: 600; color: var(--azul-texto); padding-bottom: 4px; }
+
+.dia {
+  position: relative;
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: #f4f9fd;
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+}
+.dia:hover { background: var(--azul); }
+.dia.hoje { border-color: var(--azul-forte); font-weight: 800; }
+.dia.selecionado { background: var(--verde-forte); color: var(--verde-texto); font-weight: 800; }
+.dia.tem-cafe::after {
+  content: attr(data-qtd);
+  position: absolute; top: 3px; right: 5px;
+  font-size: .68rem; font-weight: 800; color: var(--verde-texto);
+  background: var(--verde); border-radius: 8px; padding: 0 5px;
+}
+.vazio { visibility: hidden; }
+
+.legenda { margin: 12px 0 0; font-size: .85rem; color: var(--azul-texto); }
+.bolinha { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--verde-forte); margin-right: 4px; }
+
+/* Formulário */
+label { display: block; font-weight: 600; margin: 12px 0 4px; font-size: .92rem; }
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--azul);
+  border-radius: 10px;
+  font: inherit;
+  color: var(--texto);
+  background: var(--branco);
+}
+input:focus, button:focus-visible { outline: 3px solid var(--verde-forte); outline-offset: 1px; }
+
+.linha-item { display: flex; gap: 8px; }
+
+button {
+  font: inherit; font-weight: 800;
+  border: none; border-radius: 10px;
+  padding: 10px 16px; cursor: pointer;
+  background: var(--verde-forte); color: var(--verde-texto);
+}
+
+@media (max-width: 760px) {
+  .topo {
+    padding: 24px 14px 8px;
+    position: relative;
+  }
+
+  #btn-sair {
+    position: static;
+    margin-top: 12px;
+    width: 100%;
+    max-width: 180px;
+  }
+
+  .painel {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .topo h1 {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .linha-item {
+    flex-direction: column;
+  }
+
+  .linha-item > * {
+    width: 100%;
+  }
+
+  .mes-nav h2 {
+    font-size: 1rem;
+  }
+
+  .dia {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .auth-area {
+    margin: 20px 14px;
+  }
+
+  .topo p {
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .dias {
+    gap: 4px;
+  }
+
+  .semana span {
+    font-size: 0.72rem;
+  }
+
+  .chip {
+    font-size: 0.8rem;
+  }
+
+  table {
+    min-width: 420px;
+  }
+}
+button:hover { filter: brightness(.96); }
+button:disabled { opacity: .6; cursor: wait; }
+button.secundario { background: var(--azul); color: var(--azul-texto); white-space: nowrap; }
+#btn-salvar { width: 100%; margin-top: 8px; }
+
+.chips { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--verde); color: var(--verde-texto);
+  border-radius: 999px; padding: 4px 6px 4px 12px; font-size: .9rem;
+}
+.chip button {
+  padding: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--branco); color: var(--verde-texto); line-height: 1;
+}
+
+.mensagem { min-height: 1.3em; margin: 10px 0 0; font-size: .9rem; font-weight: 600; }
+.mensagem.erro { color: var(--erro); }
+.mensagem.ok { color: var(--verde-texto); }
+
+/* Tabela */
+.rolagem { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 560px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--azul); vertical-align: top; }
+th { background: var(--azul); color: var(--azul-texto); font-size: .9rem; }
+th:first-child { border-top-left-radius: 10px; }
+th:last-child { border-top-right-radius: 10px; }
+td.vazia { text-align: center; color: var(--azul-texto); padding: 24px; }
+
+.item-linha { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.item-linha input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--verde-forte); padding: 0; }
+.item-linha .remover {
+  padding: 0 7px; background: transparent; color: var(--erro);
+  font-size: 1.1rem; line-height: 1.3;
+}
+.selo { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 6px; padding-top: 2px; }
+.selo.trouxe { color: var(--verde-texto); }
+.selo.nao { color: var(--erro); }
+.selo.pendente { color: var(--azul-texto); }
+
