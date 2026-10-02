@@ -1,3 +1,7 @@
+// ====== Vercel Speed Insights ======
+import { injectSpeedInsights } from '@vercel/speed-insights';
+injectSpeedInsights();
+
 // ====== Configuração do Supabase ======
 const SUPABASE_URL = "https://axjiiqllucpagohepecl.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4amlpcWxsdWNwYWdvaGVwZWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NTQ1NzgsImV4cCI6MjEwNjQzMDU3OH0.6hxghy7K093wjn6PsqT5ALZ0NMsqf38UbU0BSbm_31c";
