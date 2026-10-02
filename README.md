@@ -41,7 +41,7 @@ Adicione os itens à lista.
 Os itens cadastrados ficarão disponíveis para visualização na página.
 Confirmação dos itens.
 
-Os itens só poderão ser confirmados para o dia selecionado.
+Os itens só poderão ser confirmados no dia selecionado.
 
 Cancelamento:
 
