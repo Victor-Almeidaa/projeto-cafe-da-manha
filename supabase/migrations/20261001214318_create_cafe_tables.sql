@@ -4,10 +4,9 @@
 This migration sets up the database for the team breakfast planner app.
 
 1. New Tables
-   - `colaboradores`: stores each team member's name, CPF, and link to their auth account.
+   - `colaboradores`: stores each team member's name and link to their auth account.
      - `id` (bigint, primary key, auto-generated)
      - `nome` (text, not null) — unique case-insensitive
-     - `cpf` (char(11), not null, unique) — Brazilian tax ID
      - `auth_user_id` (uuid, unique, references auth.users) — links to Supabase Auth account
    - `itens_cafe`: stores breakfast items each person will bring on a given date.
      - `id` (bigint, primary key, auto-generated)
@@ -21,7 +20,7 @@ This migration sets up the database for the team breakfast planner app.
    - Unique index on `itens_cafe(data_cafe, lower(item))` to prevent the same item being listed twice on the same date.
 
 3. Trigger
-   - `criar_colaborador_auth()`: a SECURITY DEFINER trigger function that runs after a new auth.users row is inserted. It reads the `nome` and `cpf` from the user's signup metadata and creates a matching `colaboradores` row. If the CPF already exists and the name matches, it links the existing record to the new auth account.
+   - `criar_colaborador_auth()`: a SECURITY DEFINER trigger function that runs after a new auth.users row is inserted. It reads the `nome` from the user's signup metadata and creates a matching `colaboradores` row. If an unlinked collaborator with that name exists, it links the record to the new auth account.
    - Trigger `ao_criar_usuario_auth` fires the function on `auth.users` INSERT.
 
 4. Security (RLS)
@@ -32,13 +31,12 @@ This migration sets up the database for the team breakfast planner app.
 
 5. Notes
    - Anon role has no access to either table (app requires sign-in).
-   - The trigger validates that nome is non-empty and cpf is exactly 11 digits before inserting.
+   - The trigger validates that nome is non-empty before inserting.
 */
 
 CREATE TABLE IF NOT EXISTS colaboradores (
   id bigint generated always as identity primary key,
   nome text not null,
-  cpf char(11) not null unique,
   auth_user_id uuid unique references auth.users(id)
 );
 
@@ -65,23 +63,21 @@ SET search_path = public
 AS $$
 DECLARE
   nome_colaborador text := nullif(trim(new.raw_user_meta_data ->> 'nome'), '');
-  cpf_colaborador text := new.raw_user_meta_data ->> 'cpf';
   colaborador_id bigint;
 BEGIN
-  IF nome_colaborador IS NULL OR cpf_colaborador !~ '^[0-9]{11}$' THEN
-    RAISE EXCEPTION 'Nome e CPF válidos são obrigatórios para criar a conta.';
+  IF nome_colaborador IS NULL THEN
+    RAISE EXCEPTION 'Nome é obrigatório para criar a conta.';
   END IF;
 
-  INSERT INTO public.colaboradores (nome, cpf, auth_user_id)
-  VALUES (nome_colaborador, cpf_colaborador, new.id)
-  ON CONFLICT (cpf) DO UPDATE
+  INSERT INTO public.colaboradores (nome, auth_user_id)
+  VALUES (nome_colaborador, new.id)
+  ON CONFLICT (lower(nome)) DO UPDATE
     SET auth_user_id = excluded.auth_user_id
     WHERE colaboradores.auth_user_id IS NULL
-      AND lower(colaboradores.nome) = lower(excluded.nome)
   RETURNING id INTO colaborador_id;
 
   IF colaborador_id IS NULL THEN
-    RAISE EXCEPTION 'Este CPF já está associado a outro cadastro ou o nome não confere.';
+    RAISE EXCEPTION 'Este nome já está associado a outra conta.';
   END IF;
 
   RETURN new;

@@ -51,7 +51,6 @@ const elAppArea = document.getElementById("app-area");
 const elFormAuth = document.getElementById("form-auth");
 const elAuthTitulo = document.getElementById("auth-titulo");
 const elAuthNome = document.getElementById("auth-nome");
-const elAuthCpf = document.getElementById("auth-cpf");
 const elAuthEmail = document.getElementById("auth-email");
 const elAuthSenha = document.getElementById("auth-senha");
 const elCamposCadastroConta = document.getElementById("campos-cadastro-conta");
@@ -72,17 +71,6 @@ function paraISO(d) {
 function formatarData(iso) {
   const [a, m, d] = iso.split("-");
   return `${d}/${m}/${a}`;
-}
-
-function cpfValido(cpf) {
-  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-  for (let tamanho = 9; tamanho <= 10; tamanho++) {
-    let soma = 0;
-    for (let i = 0; i < tamanho; i++) soma += Number(cpf[i]) * (tamanho + 1 - i);
-    const digito = ((soma * 10) % 11) % 10;
-    if (digito !== Number(cpf[tamanho])) return false;
-  }
-  return true;
 }
 
 function mostrarMensagem(texto, tipo) {
@@ -304,7 +292,6 @@ elBtnAlternarAuth.addEventListener("click", () => {
   modoCadastroConta = !modoCadastroConta;
   elCamposCadastroConta.hidden = !modoCadastroConta;
   elAuthNome.required = modoCadastroConta;
-  elAuthCpf.required = modoCadastroConta;
   elAuthSenha.autocomplete = modoCadastroConta ? "new-password" : "current-password";
   elAuthTitulo.textContent = modoCadastroConta ? "Criar conta" : "Entrar";
   elBtnAuth.textContent = modoCadastroConta ? "Criar conta" : "Entrar";
@@ -322,13 +309,11 @@ elFormAuth.addEventListener("submit", async e => {
   try {
     if (modoCadastroConta) {
       const nome = elAuthNome.value.trim();
-      const cpf = elAuthCpf.value.replace(/\D/g, "");
       if (nome.length < 3) throw new Error("Digite seu nome completo.");
-      if (!cpfValido(cpf)) throw new Error("CPF inválido. Confira os 11 dígitos.");
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password: senha,
-        options: { data: { nome, cpf } }
+        options: { data: { nome } }
       });
       if (error) throw error;
       mostrarMensagemAuth(data.session
@@ -403,7 +388,7 @@ document.getElementById("form-cadastro").addEventListener("submit", async e => {
     await carregarMes();
   } catch (erro) {
     const duplicado = /duplicate|unique/i.test(erro.message);
-    mostrarMensagem(duplicado ? "Já existe um colaborador com esse nome ou CPF." : erro.message, "erro");
+    mostrarMensagem(duplicado ? "Já existe um colaborador com esse nome ou item duplicado." : erro.message, "erro");
   } finally {
     elBtnSalvar.disabled = false;
   }

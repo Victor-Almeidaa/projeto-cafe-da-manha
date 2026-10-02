@@ -18,7 +18,6 @@ Claude
 
 Funcionalidades:
 Cadastro de colaboradores.
-Registro de CPF.
 Cadastro dos alimentos que serão levados.
 Escolha da data do café da manhã.
 Organização das contribuições.
