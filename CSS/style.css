@@ -46,11 +46,12 @@ body {
   margin: 0 auto;
   padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 
 .cartao {
+  min-width: 0;
   background: var(--branco);
   border-radius: var(--raio);
   padding: 22px;
@@ -70,11 +71,12 @@ body {
 }
 .mes-nav button:hover { background: var(--azul-forte); }
 
-.semana, .dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.semana, .dias { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
 .semana span { text-align: center; font-size: .8rem; font-weight: 600; color: var(--azul-texto); padding-bottom: 4px; }
 
 .dia {
   position: relative;
+  min-width: 0;
   aspect-ratio: 1;
   border: 2px solid transparent;
   border-radius: 12px;
@@ -119,7 +121,7 @@ button {
   background: var(--verde-forte); color: var(--verde-texto);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 840px) {
   .topo {
     padding: 24px 14px 8px;
     position: relative;
@@ -133,7 +135,7 @@ button {
   }
 
   .painel {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     padding: 14px;
   }
 
@@ -160,8 +162,18 @@ button {
 }
 
 @media (max-width: 560px) {
+  .painel {
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .cartao {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
   .auth-area {
-    margin: 20px 14px;
+    margin: 16px 10px;
   }
 
   .topo p {
@@ -225,3 +237,6 @@ td.vazia { text-align: center; color: var(--azul-texto); padding: 24px; }
 .selo.nao { color: var(--erro); }
 .selo.pendente { color: var(--azul-texto); }
 
+@media (max-width: 560px) {
+  table { min-width: 420px; }
+}
