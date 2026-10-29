@@ -6,15 +6,21 @@ Aplicação web desenvolvida para organizar o café da manhã dos colaboradores,
 O objetivo é facilitar a organização, evitar conflitos e permitir que todos acompanhem as contribuições da equipe.
 
 Tecnologias utilizadas:
-Angular
-Spring Boot
-Java
-TypeScript
+Angular,
+Spring Boot,
+Java,
+TypeScript.
 
 Inteligência Artificial utilizada:
-Bolt
-ChatGPT
-Claude
+Bolt,
+ChatGPT,
+Claude,
+
+Banco de dados:
+supabase.
+
+publicado: 
+Vercel.
 
 Funcionalidades:
 Cadastro de colaboradores.
@@ -34,7 +40,7 @@ Adicione os itens à lista.
 Os itens cadastrados ficarão disponíveis para visualização na página.
 Confirmação dos itens.
 
-Os itens só poderão ser confirmados para o dia selecionado.
+Os itens só poderão ser confirmados no dia selecionado.
 
 Cancelamento:
 
