@@ -233,14 +233,6 @@ async function removerItem(id) {
 }
 
 // ====== Formulário ======
-elAuthCpf.addEventListener("input", () => {
-  const d = elAuthCpf.value.replace(/\D/g, "").slice(0, 11);
-  elAuthCpf.value = d
-    .replace(/(\d{3})(\d)/, "$1.$2")
-    .replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
-    .replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
-});
-
 elData.min = paraISO(new Date(Date.now() + 86400000)); // só datas futuras
 elData.addEventListener("change", () => {
   if (!elData.value) return;
