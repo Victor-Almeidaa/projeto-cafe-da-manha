@@ -318,8 +318,11 @@ elFormAuth.addEventListener("submit", async e => {
     }
   } catch (erro) {
     const mensagem = erro.message || "Não foi possível autenticar.";
+    const falhaAoCriarUsuario = modoCadastroConta && /database error saving new user/i.test(mensagem);
     mostrarMensagemAuth(
-      /cpf/i.test(mensagem)
+      falhaAoCriarUsuario
+        ? "O Supabase não conseguiu criar o perfil. Execute a migração 20261029005400_fix_signup_trigger.sql no SQL Editor e tente novamente."
+        : /cpf/i.test(mensagem)
         ? "O banco ainda exige CPF. No Supabase, execute a migração 20261029002500_remove_cpf.sql e tente novamente."
         : mensagem,
       "erro"

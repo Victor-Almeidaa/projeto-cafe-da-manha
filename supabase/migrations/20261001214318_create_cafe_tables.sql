@@ -6,7 +6,7 @@ This migration sets up the database for the team breakfast planner app.
 1. New Tables
    - `colaboradores`: stores each team member's name and link to their auth account.
      - `id` (bigint, primary key, auto-generated)
-     - `nome` (text, not null) — unique case-insensitive
+     - `nome` (text, not null)
      - `auth_user_id` (uuid, unique, references auth.users) — links to Supabase Auth account
    - `itens_cafe`: stores breakfast items each person will bring on a given date.
      - `id` (bigint, primary key, auto-generated)
@@ -16,11 +16,10 @@ This migration sets up the database for the team breakfast planner app.
      - `trouxe` (boolean, default false) — whether the person actually brought it
 
 2. Indexes
-   - Unique index on `colaboradores(lower(nome))` to prevent duplicate names.
    - Unique index on `itens_cafe(data_cafe, lower(item))` to prevent the same item being listed twice on the same date.
 
 3. Trigger
-   - `criar_colaborador_auth()`: a SECURITY DEFINER trigger function that runs after a new auth.users row is inserted. It reads the `nome` from the user's signup metadata and creates a matching `colaboradores` row. If an unlinked collaborator with that name exists, it links the record to the new auth account.
+   - `criar_colaborador_auth()`: a SECURITY DEFINER trigger function that runs after a new auth.users row is inserted. It reads the `nome` from the user's signup metadata and creates a colaboradores row for that auth account.
    - Trigger `ao_criar_usuario_auth` fires the function on `auth.users` INSERT.
 
 4. Security (RLS)
@@ -42,8 +41,6 @@ CREATE TABLE IF NOT EXISTS colaboradores (
 
 ALTER TABLE colaboradores ADD COLUMN IF NOT EXISTS auth_user_id uuid unique references auth.users(id);
 
-CREATE UNIQUE INDEX IF NOT EXISTS colaboradores_nome_unico ON colaboradores (lower(nome));
-
 CREATE TABLE IF NOT EXISTS itens_cafe (
   id bigint generated always as identity primary key,
   colaborador_id bigint not null references colaboradores(id) on delete cascade,
@@ -63,22 +60,13 @@ SET search_path = public
 AS $$
 DECLARE
   nome_colaborador text := nullif(trim(new.raw_user_meta_data ->> 'nome'), '');
-  colaborador_id bigint;
 BEGIN
   IF nome_colaborador IS NULL THEN
     RAISE EXCEPTION 'Nome é obrigatório para criar a conta.';
   END IF;
 
   INSERT INTO public.colaboradores (nome, auth_user_id)
-  VALUES (nome_colaborador, new.id)
-  ON CONFLICT (lower(nome)) DO UPDATE
-    SET auth_user_id = excluded.auth_user_id
-    WHERE colaboradores.auth_user_id IS NULL
-  RETURNING id INTO colaborador_id;
-
-  IF colaborador_id IS NULL THEN
-    RAISE EXCEPTION 'Este nome já está associado a outra conta.';
-  END IF;
+  VALUES (nome_colaborador, new.id);
 
   RETURN new;
 END;

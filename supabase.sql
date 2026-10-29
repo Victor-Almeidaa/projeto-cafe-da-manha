@@ -7,7 +7,6 @@ create table if not exists colaboradores (
 );
 alter table colaboradores add column if not exists auth_user_id uuid unique references auth.users(id);
 alter table colaboradores drop column if exists cpf;
-create unique index if not exists colaboradores_nome_unico on colaboradores (lower(nome));
 
 create table if not exists itens_cafe (
   id bigint generated always as identity primary key,
@@ -28,22 +27,13 @@ set search_path = public
 as $$
 declare
   nome_colaborador text := nullif(trim(new.raw_user_meta_data ->> 'nome'), '');
-  colaborador_id bigint;
 begin
   if nome_colaborador is null then
     raise exception 'Nome é obrigatório para criar a conta.';
   end if;
 
   insert into public.colaboradores (nome, auth_user_id)
-  values (nome_colaborador, new.id)
-  on conflict (lower(nome)) do update
-    set auth_user_id = excluded.auth_user_id
-    where colaboradores.auth_user_id is null
-  returning id into colaborador_id;
-
-  if colaborador_id is null then
-    raise exception 'Este nome já está associado a outra conta.';
-  end if;
+  values (nome_colaborador, new.id);
 
   return new;
 end;
