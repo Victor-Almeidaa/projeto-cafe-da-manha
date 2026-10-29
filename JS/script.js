@@ -325,7 +325,13 @@ elFormAuth.addEventListener("submit", async e => {
       mostrarMensagemAuth("Login realizado.", "ok");
     }
   } catch (erro) {
-    mostrarMensagemAuth(erro.message || "Não foi possível autenticar.", "erro");
+    const mensagem = erro.message || "Não foi possível autenticar.";
+    mostrarMensagemAuth(
+      /cpf/i.test(mensagem)
+        ? "O banco ainda exige CPF. No Supabase, execute a migração 20261029002500_remove_cpf.sql e tente novamente."
+        : mensagem,
+      "erro"
+    );
   } finally {
     elBtnAuth.disabled = false;
   }
